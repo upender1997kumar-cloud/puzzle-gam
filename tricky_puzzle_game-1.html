@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tricky Puzzle Challenge</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:20px}
+.game{max-width:600px;margin:auto;background:white;padding:20px;border-radius:18px}
+button{width:100%;padding:14px;margin:7px 0;border:1px solid #ccc;border-radius:12px;background:#fafafa;text-align:left;font-size:16px}
+button:hover{background:#eee}.next{text-align:center;background:#222;color:white}
+.score{float:right}.result{min-height:24px;margin-top:12px;font-weight:bold}
+</style>
+</head>
+<body>
+<div class="game">
+<h2>🧩 Tricky Puzzle Challenge <span class="score">⭐ <span id="score">0</span></span></h2>
+<p id="num"></p>
+<h3 id="question"></h3>
+<div id="options"></div>
+<div class="result" id="result"></div>
+<button class="next" id="next" disabled>Next Puzzle →</button>
+</div>
+<script>
+const puzzles=[
+{q:"Ek aadmi Friday ko city se nikla. 3 din baad Friday ko hi wapas aa gaya. Kaise?",o:["Woh time machine me tha","Uske horse ka naam Friday tha","Calendar galat tha","Impossible"],a:1},
+{q:"Jitna zyada tum mujhe lete ho, utna hi zyada peeche chhodte ho. Main kya hoon?",o:["Time","Steps","Money","Sleep"],a:1},
+{q:"Ek cheez hai jo tumhari hai, lekin use sabse zyada doosre log karte hain. Kya?",o:["Tumhara naam","Tumhara phone","Tumhara ghar","Tumhari photo"],a:0},
+{q:"2 fathers aur 2 sons restaurant gaye. Sirf 3 meals order kiye aur sabne ek-ek meal khaya. Kaise?",o:["Ek ne nahi khaya","Woh 3 log the: grandfather, father aur son","Meals share kiye","Waiter ne galti ki"],a:1},
+{q:"Mere paas bahut saare words hain, lekin main bol nahi sakta. Mere paas pages hain, lekin main book nahi hoon. Main kya hoon?",o:["Dictionary","Computer","Newspaper","Keyboard"],a:2}
+];
+let i=0,score=0,answered=false;
+const q=document.getElementById("question"),opts=document.getElementById("options"),res=document.getElementById("result"),next=document.getElementById("next"),num=document.getElementById("num"),sc=document.getElementById("score");
+function render(){
+ answered=false; num.textContent=`Puzzle ${i+1} of ${puzzles.length}`; q.textContent=puzzles[i].q;
+ opts.innerHTML=""; res.textContent=""; next.disabled=true;
+ puzzles[i].o.forEach((x,j)=>{let b=document.createElement("button");b.textContent=x;b.onclick=()=>{
+  if(answered)return;answered=true;document.querySelectorAll(".game #options button").forEach(z=>z.disabled=true);
+  if(j===puzzles[i].a){score++;sc.textContent=score;res.textContent="✅ Correct! 🔥"}
+  else res.textContent="❌ Wrong — correct answer: "+puzzles[i].o[puzzles[i].a];
+  next.disabled=false;
+ };opts.appendChild(b)});
+}
+next.onclick=()=>{
+ i++;
+ if(i<puzzles.length){render()}
+ else{num.textContent="🎉 Challenge Complete";q.textContent=`Final Score: ${score}/${puzzles.length}`;opts.innerHTML="";res.textContent=score===5?"🧠 GENIUS!":"😄 Good try!";next.textContent="Play Again";next.disabled=false;next.onclick=()=>{i=0;score=0;sc.textContent=0;next.textContent="Next Puzzle →";next.onclick=render;render()}}
+};
+render();
+</script>
+</body>
+</html>
